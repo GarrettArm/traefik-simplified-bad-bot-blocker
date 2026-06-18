@@ -129,7 +129,7 @@ func readUserAgents(userAgentReader io.ReadCloser) ([]string, error) {
 	defer userAgentReader.Close()
 	scanner := bufio.NewScanner(userAgentReader)
 	for scanner.Scan() {
-		agent := strings.ToLower(strings.TrimSpace(scanner.Text()))
+		agent := strings.ToLower(strings.TrimSpace(strings.ReplaceAll(scanner.Text(), "\\", "")))
 		userAgents = append(userAgents, agent)
 	}
 

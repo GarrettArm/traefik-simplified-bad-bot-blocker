@@ -1,8 +1,10 @@
 package traefik_simplified_bad_bot_blocker
 
 import (
+	"io"
 	"net/netip"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -70,6 +72,16 @@ func TestReadUserAgents(t *testing.T) {
 	userAgents, err := readUserAgents(f)
 	if !equalStrings(userAgents, expected) || err != nil {
 		t.Fatalf("readUserAgents(f) = %v, %e; want %v, <nil>", userAgents, err, expected)
+	}
+}
+
+func TestReadUserAgentsStripsBackslashes(t *testing.T) {
+	input := io.NopCloser(strings.NewReader("Sogou\\ web\\ spider\n"))
+
+	expected := []string{"sogou web spider"}
+	userAgents, err := readUserAgents(input)
+	if !equalStrings(userAgents, expected) || err != nil {
+		t.Fatalf("readUserAgents(input) = %v, %e; want %v, <nil>", userAgents, err, expected)
 	}
 }
 
